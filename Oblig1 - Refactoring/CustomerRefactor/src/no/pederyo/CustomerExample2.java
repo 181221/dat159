@@ -1,32 +1,30 @@
 package no.pederyo;
+
 import java.util.Enumeration;
 import java.util.Vector;
 
-public class Customer {
+public class CustomerExample2 {
+
     private String _name;
     private Vector _rentals = new Vector();
     private String _result;
     private int frequentRenterPoints;
     private int totalAmount;
 
-    public Customer(String name) {
+    public CustomerExample2(String name) {
         _name = name;
-
+        _result = "Rental Record for " + _name + "\n";
     }
 
     public String statement() {
-
-        _result = "Rental Record for " + _name + "\n";
 
         Enumeration rentals = _rentals.elements();
 
         while (rentals.hasMoreElements()) {
 
-            Rental each = (Rental) rentals.nextElement();
+            RentalExample2 each = (RentalExample2) rentals.nextElement();
 
-            double thisAmount = each.determineAmount();
-
-            addRenterPoints(each);
+            double thisAmount = each.determineAmount(frequentRenterPoints++);
 
             totalAmount += thisAmount;
 
@@ -37,11 +35,6 @@ public class Customer {
 
         return _result;
 
-    }
-
-    private void addRenterPoints(Rental each) {
-        frequentRenterPoints ++;
-        if ((each.getMovie().getPriceCode() == Movie.NEW_RELEASE) && each.getDaysRented() > 1) frequentRenterPoints ++;
     }
 
     private void resultfooterLineMessage() {
