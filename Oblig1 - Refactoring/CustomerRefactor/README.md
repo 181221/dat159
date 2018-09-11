@@ -80,6 +80,8 @@ The method statement has clearly to much responsibility and the code here can be
 #### Refactored
 
 ![](refactored-statement-graph.svg)
+#### Rental Example 2 - refactored rentalpoints to rentalClass
+![](refactored-example2-graph.svg)
 
 ### Complexity - Before and after
 
