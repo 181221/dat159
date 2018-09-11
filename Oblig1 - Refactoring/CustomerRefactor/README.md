@@ -46,7 +46,7 @@ public String statement() {
         return result;
     }
 ```
-The method statement has to much responsibility and the code here can be converted into smaller chuncs of code. My main goal here was to move the switch-case to a method - determineAmount() in the Rental class. Since the Rental class holds information about the movie and days rented. I also converted totalAmount, FrequentRenterPoints and result into globals for pratical purposes. I also moved footer lines to a method.
+The method statement has to much responsibility and the code here can be converted into smaller chunks of code. My main goal here was to move the switch-case to a method - determineAmount() in the Rental class. Since the Rental class holds information about the movie and days rented. I also converted totalAmount, FrequentRenterPoints and result into globals for pratical purposes. I also moved footer lines to a method.
 ```java
  public String statement() {
 
@@ -75,9 +75,20 @@ The method statement has to much responsibility and the code here can be convert
 
     }
 ```
+### Measure SLOC & McCabe's Cyclomatic Complexity - Before and after.
 
+![](original-statement-graph.svg)
 
+#### Refactored
+
+![](refactored-statement-graph.svg)
+
+### Complexity - Before and after
 
 ![](original-statement-complexity.JPG)
 
-![](original-statement-graph.svg)
+#### Refactored
+
+![](refactor-statement-complexity.JPG)
+
+
