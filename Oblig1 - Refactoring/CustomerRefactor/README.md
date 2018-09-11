@@ -80,7 +80,29 @@ The method statement has clearly to much responsibility and the code here can be
 #### Refactored
 
 ![](refactored-statement-graph.svg)
-#### Rental Example 2 - refactored rentalpoints to rentalClass
+#### Rental Example 2 - refactored rentalpoints into rentalClass
+```java
+ public String statement() {
+ 
+         Enumeration rentals = _rentals.elements();
+ 
+         while (rentals.hasMoreElements()) {
+ 
+             Rental each = (Rental) rentals.nextElement();
+ 
+             double thisAmount = each.determineAmount(frequentRenterpoints++);
+ 
+             totalAmount += thisAmount;
+ 
+             _result += "\t" + each.getMovie().getTitle()+ "\t" + String.valueOf(thisAmount) + "\n";
+         }
+ 
+         resultfooterLine();
+ 
+         return _result;
+ 
+     }
+```
 ![](refactored-example2-graph.svg)
 
 ### Complexity - Before and after
