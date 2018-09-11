@@ -79,3 +79,5 @@ The method statement has to much responsibility and the code here can be convert
 
 
 ![](original-statement-complexity.JPG)
+
+![](original-statement-graph.svg)
