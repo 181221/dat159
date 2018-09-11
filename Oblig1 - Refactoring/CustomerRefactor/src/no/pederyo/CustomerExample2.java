@@ -5,11 +5,9 @@ import java.util.Vector;
 
 public class CustomerExample2 {
 
-    private String _name;
+    private String _name, _result;
     private Vector _rentals = new Vector();
-    private String _result;
-    private int frequentRenterPoints;
-    private int totalAmount;
+    private int frequentRenterPoints, totalAmount;
 
     public CustomerExample2(String name) {
         _name = name;
@@ -40,7 +38,7 @@ public class CustomerExample2 {
     private void resultfooterLineMessage() {
         _result += "Amount owed is " + String.valueOf(totalAmount) + "\n";
         _result += "You earned " + String.valueOf(frequentRenterPoints) +
-                " frequent renter points";
+                " frequent renter points" + "\n\n";
     }
 
 
