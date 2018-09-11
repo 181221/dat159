@@ -1,7 +1,6 @@
 ## Oblig 1 - Refactor statement method
 
-### 
-
+### Original statement method
 ```java
 public String statement() {
         double totalAmount = 0;
@@ -47,6 +46,36 @@ public String statement() {
         return result;
     }
 ```
+The method statement has to much responsibility and the code here can be converted into smaller chuncs of code. My main goal here was to move the switch-case to a method - determineAmount() in the Rental class. Since the Rental class holds information about the movie and days rented. I also converted totalAmount, FrequentRenterPoints and result into globals for pratical purposes. I also moved footer lines to a method.
+```java
+ public String statement() {
+
+        _result = "Rental Record for " + getName() + "\n";
+
+        Enumeration rentals = _rentals.elements();
+
+        while (rentals.hasMoreElements()) {
+
+            Rental each = (Rental) rentals.nextElement();
+
+            Movie movie = each.getMovie();
+
+            double thisAmount = each.determineAmount();
+
+            addRenterPoints(each);
+
+            totalAmount += thisAmount;
+
+            _result += "\t" + movie.getTitle()+ "\t" + String.valueOf(thisAmount) + "\n";
+        }
+
+        resultfooterLine();
+
+        return _result;
+
+    }
+```
+
 
 
 ![](original-statement-complexity.JPG)
