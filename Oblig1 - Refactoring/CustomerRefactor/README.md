@@ -46,7 +46,7 @@ public String statement() {
         return result;
     }
 ```
-The method statement has to much responsibility and the code here can be converted into smaller chunks of code. My main goal here was to move the switch-case to a method - determineAmount() in the Rental class. Since the Rental class holds information about the movie and days rented. I also converted totalAmount, FrequentRenterPoints and result into globals for pratical purposes. I also moved footer lines to a method.
+The method statement has clearly to much responsibility and the code here can be converted into smaller chunks of code with less responsibility. My main goal here was to move the switch-case to a method - determineAmount() in the Rental class. Since the Rental class holds information about the movie and days rented. I also converted totalAmount, FrequentRenterPoints and result into globals for pratical purposes. I also moved footer lines to a method.
 ```java
  public String statement() {
 
