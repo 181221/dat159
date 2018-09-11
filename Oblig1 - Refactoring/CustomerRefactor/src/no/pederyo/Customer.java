@@ -11,11 +11,12 @@ public class Customer {
 
     public Customer(String name) {
         _name = name;
+
     }
 
     public String statement() {
 
-        _result = "Rental Record for " + getName() + "\n";
+        _result = "Rental Record for " + _name + "\n";
 
         Enumeration rentals = _rentals.elements();
 
@@ -23,15 +24,13 @@ public class Customer {
 
             Rental each = (Rental) rentals.nextElement();
 
-            Movie movie = each.getMovie();
-
             double thisAmount = each.determineAmount();
 
             addRenterPoints(each);
 
             totalAmount += thisAmount;
 
-            _result += "\t" + movie.getTitle()+ "\t" + String.valueOf(thisAmount) + "\n";
+            _result += "\t" + each.getMovie().getTitle()+ "\t" + String.valueOf(thisAmount) + "\n";
         }
 
         resultfooterLine();
