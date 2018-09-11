@@ -91,4 +91,6 @@ The method statement has clearly to much responsibility and the code here can be
 
 ![](refactor-statement-complexity.JPG)
 
+#### RentalExample2 has 11 lloc
+
 
