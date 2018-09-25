@@ -36,4 +36,9 @@ class CryptoTest {
         char[] test = util.encryptHill("cipher");
         System.out.println(util.decryptHill(new String(test)));
     }
+    @Test
+    public void inverse(){
+        Matrix m = new Matrix();
+    }
+
 }

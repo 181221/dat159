@@ -29,12 +29,10 @@ public class Utility {
     private int key1 = 5;
     private int key2 = 7;
     private int inverse = 21;
-    Matrix matrix;
-
+    private Matrix matrixKey;
     public Utility(){
-        matrix = new Matrix();
+        matrixKey = new Matrix();
     }
-
 
     public char[] encryptAffine(String s){
         char[] encryptedChar = new char[s.length()];
@@ -51,23 +49,18 @@ public class Utility {
         return decryptedText;
     }
 
-    public char[] encryptHill (String s){
-        int[] encrypted = new int[s.length()];
-        boolean oddetall = s.length() % 2 != 0;
-        for(int i = 0; i < s.length()-1; i += 2){
-            int[] test = matrix.calculateMatrix(i,s);
-            encrypted[i]= test[0];
-            encrypted[i+1]= test[1];
-        }
-        if (oddetall){
-            //only calculate first row with last number
-        }
-        return matrix.toChar(encrypted);
+    public char[] encryptHill(String s){
+        Matrix matrix = new Matrix(ArrayUtil.toInt(s));
+        return ArrayUtil.toChar((matrix.multiply(matrixKey.getMatrix())));
+       // return ArrayUtil.toChar(matrix.multiply(ArrayUtil.toInt(s), Matrix.KeyType.DEFAULT));
     }
 
     public String decryptHill (String s){
-        int[] deCrypted = matrix.toInt(s);
-        return new String(matrix.toChar(matrix.multiply(deCrypted)));
+        Matrix matrix = new Matrix(ArrayUtil.toInt(s));
+        return new String(ArrayUtil.toChar(matrix.multiply(matrixKey.getInverse())));
+        //int[] deCrypted = matrix.toInt(s);
+        //return new String(matrix.toChar(matrix.multiply(deCrypted, KeyType.INVERSE)));
+       // return new String(ArrayUtil.toChar(matrix.multiply(ArrayUtil.toInt(s), Matrix.KeyType.INVERSE)));
     }
 
     private int modEncrypt(int k){
