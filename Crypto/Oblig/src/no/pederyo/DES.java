@@ -7,6 +7,8 @@ import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
 public class DES {
     private SecretKeySpec key;
     Cipher encCipher, decCipher;
@@ -24,12 +26,10 @@ public class DES {
     }
 
     public byte[] encryptDes(String str) throws BadPaddingException, IllegalBlockSizeException {
-        byte[] plainBytes = Utility.toHexByteArray(str);
-        byte[] encBytes = encCipher.doFinal(plainBytes);
-        return encBytes;
+        byte[] encBytes = encCipher.doFinal(str.getBytes());
+        return Base64.getEncoder().encode(encBytes);
     }
     public byte[] decryptDes(byte[] encodedBytes) throws BadPaddingException, IllegalBlockSizeException {
-        byte[] decBytes = decCipher.doFinal(encodedBytes);
-        return decBytes;
+        return decCipher.doFinal(Base64.getDecoder().decode(encodedBytes));
     }
 }

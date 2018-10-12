@@ -14,8 +14,6 @@ import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import static no.pederyo.Utility.asciiToHex;
-
 /**
  * @author tosindo
  *
@@ -42,14 +40,13 @@ public class Client {
 	    	des = new DES();
 	    	// send a plaintext message to server
 	    	String plaintxt = "Hello from client";
-
 	    	// send message to server
-	    	oos.writeObject(des.encryptDes(asciiToHex(plaintxt)));
+	    	oos.writeObject(des.encryptDes(plaintxt));
 	    	oos.flush();
 	    	
 	    	// receive response from server
 	    	byte[] response = (byte[]) ois.readObject();
-	    	System.out.println("Response from server: "+ new String(response, "ASCII"));
+	    	System.out.println("Response from server: "+ new String(des.decryptDes(response), "UTF-8"));
 	    	
 	    	// close cliet socket
 	    	client.close();

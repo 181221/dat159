@@ -6,7 +6,6 @@ package no.pederyo;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.rmi.CORBA.Util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,8 +13,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
-import static no.pederyo.Utility.bytesToString;
 
 /**
  * @author tosindo
@@ -60,8 +57,7 @@ public class Server {
 	        // Receive message from the client
 	        byte[] clientMsg = (byte[]) ois.readObject();
 			byte[] clientMsgDecrypted = des.decryptDes(clientMsg);
-
-            System.out.println(Utility.hexToAscii(Utility.bytesToString(clientMsgDecrypted)));
+			System.out.println(new String(clientMsgDecrypted, "UTF-8"));
 	        // Print the message in UTF-8 format
 	        //System.out.println("Message from Client: "+ new String(clientMsg, "UTF-8"));
 	        
@@ -72,7 +68,7 @@ public class Server {
 	        	response = "Message received from client";
 	        	
 	        	// Send the plaintext response message to the client
-	            oos.writeObject(response.getBytes());
+	            oos.writeObject(des.encryptDes(response));
 	            oos.flush();
 	        }
 	        
