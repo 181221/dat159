@@ -52,15 +52,11 @@ public class Utility {
     public char[] encryptHill(String s){
         Matrix matrix = new Matrix(ArrayUtil.toInt(s));
         return ArrayUtil.toChar((matrix.multiply(matrixKey.getMatrix())));
-       // return ArrayUtil.toChar(matrix.multiply(ArrayUtil.toInt(s), Matrix.KeyType.DEFAULT));
     }
 
     public String decryptHill (String s){
         Matrix matrix = new Matrix(ArrayUtil.toInt(s));
         return new String(ArrayUtil.toChar(matrix.multiply(matrixKey.getInverse())));
-        //int[] deCrypted = matrix.toInt(s);
-        //return new String(matrix.toChar(matrix.multiply(deCrypted, KeyType.INVERSE)));
-       // return new String(ArrayUtil.toChar(matrix.multiply(ArrayUtil.toInt(s), Matrix.KeyType.INVERSE)));
     }
 
     private int modEncrypt(int k){

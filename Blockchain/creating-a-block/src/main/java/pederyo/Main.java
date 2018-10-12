@@ -13,6 +13,11 @@ public class Main {
 		System.out.println(miner.createAndMineNewBlock("Fourth block of the chain"));
 		System.out.println(miner.createAndMineNewBlock("Fifth block of the chain"));
 
+		System.out.println("\n Complete blockChain \n");
+		for(Block b : blockchain.getListOfBlocks()){
+			System.out.println(b.toString());
+		}
+
 		System.out.println(blockchain.isValidChain());
 	}
 	

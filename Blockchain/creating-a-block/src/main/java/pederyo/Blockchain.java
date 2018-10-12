@@ -13,12 +13,13 @@ public class Blockchain {
 	public Blockchain(int miningDifficulty) {
 		listOfBlocks = new ArrayList<Block>(100);
 		this.miningDifficulty = miningDifficulty;
-		miningTarget = "^0{"+this.miningDifficulty+"}(\\d|\\D){59}$";
+		int antall = 64- miningDifficulty;
+		miningTarget = "^0{"+miningDifficulty+"}(\\d|\\D){"+antall+"}$";
 	}
 	
 	public String getHashLastBlock(){
 		if(listOfBlocks.isEmpty()){
-			return "0000000000000000000000000000000000000000000000000000000000000000";
+			return new String(new char[64]).replace("\0","0");
 		}
 		return listOfBlocks.get(listOfBlocks.size()-1).getHash();
 	}
@@ -31,8 +32,8 @@ public class Blockchain {
 	}
 	
 	public boolean isValidChain() {
-		for(Block b : listOfBlocks) {
-			if(!b.isValidAsNextBlock(b.getPrev(),miningTarget)) return false;
+		for(int i = 1; i < listOfBlocks.size(); i++){
+			if(!listOfBlocks.get(i).isValidAsNextBlock(listOfBlocks.get(i-1).getHash(), miningTarget)) return false;
 		}
 		return true;
 	}
@@ -40,5 +41,12 @@ public class Blockchain {
 	public String getMiningTarget() {
 		return miningTarget;
 	}
-	
+
+	public List<Block> getListOfBlocks() {
+		return listOfBlocks;
+	}
+
+	public void setListOfBlocks(List<Block> listOfBlocks) {
+		this.listOfBlocks = listOfBlocks;
+	}
 }
