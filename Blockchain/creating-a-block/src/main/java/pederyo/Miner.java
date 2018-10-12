@@ -9,10 +9,10 @@ public class Miner {
 	}
 
 	public Block createAndMineNewBlock(String data) {
-		// TODO
-		// Create a new block and mine with the goal of appending to the chain.
-		// Return the mined block.
-		return new Block();
+		Block b = new Block(chain.getHashLastBlock(), data);
+		b.mine(chain.getMiningTarget());
+		chain.validateAndAppendNewBlock(b);
+		return b;
 	}		
 	
 		

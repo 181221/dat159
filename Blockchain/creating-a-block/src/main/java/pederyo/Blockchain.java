@@ -1,6 +1,5 @@
 package pederyo;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +13,12 @@ public class Blockchain {
 	public Blockchain(int miningDifficulty) {
 		listOfBlocks = new ArrayList<Block>(100);
 		this.miningDifficulty = miningDifficulty;
-		miningTarget = "^0{"+this.miningDifficulty+"}(\\d|\\D){27}$";
+		miningTarget = "^0{"+this.miningDifficulty+"}(\\d|\\D){59}$";
 	}
 	
 	public String getHashLastBlock(){
 		if(listOfBlocks.isEmpty()){
-			return "0";
+			return "0000000000000000000000000000000000000000000000000000000000000000";
 		}
 		return listOfBlocks.get(listOfBlocks.size()-1).getHash();
 	}
@@ -28,7 +27,10 @@ public class Blockchain {
 		// TODO
 		// Validate and append to chain if valid.
 		// Return whether everything went OK and the block was appended.
-		return true;
+		boolean isValid = b.isValidAsNextBlock(getHashLastBlock(), miningTarget);
+		if(isValid) listOfBlocks.add(b);
+		return isValid;
+
 	}
 	
 	public boolean isValidChain() {
@@ -37,6 +39,32 @@ public class Blockchain {
 		return true;
 	}
 
-	// getters and setters
+
+
+
+
+	public int getMiningDifficulty() {
+		return miningDifficulty;
+	}
+
+	public void setMiningDifficulty(int miningDifficulty) {
+		this.miningDifficulty = miningDifficulty;
+	}
+
+	public List<Block> getListOfBlocks() {
+		return listOfBlocks;
+	}
+
+	public void setListOfBlocks(List<Block> listOfBlocks) {
+		this.listOfBlocks = listOfBlocks;
+	}
+
+	public String getMiningTarget() {
+		return miningTarget;
+	}
+
+	public void setMiningTarget(String miningTarget) {
+		this.miningTarget = miningTarget;
+	}
 	
 }
