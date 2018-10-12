@@ -13,15 +13,7 @@ public class Main {
 		System.out.println(miner.createAndMineNewBlock("Fourth block of the chain"));
 		System.out.println(miner.createAndMineNewBlock("Fifth block of the chain"));
 
-
-		// TODO
-		
-		/*
-		 * Create a blockchain and a miner, add some blocks and validate the chain.
-		 * You should also System.print out the blocks as soon as the are appended,
-		 * and print out the final validation result. See output.txt for example
-		 * output for a solution to this assignment.
-		 */
+		System.out.println(blockchain.isValidChain());
 	}
 	
 }

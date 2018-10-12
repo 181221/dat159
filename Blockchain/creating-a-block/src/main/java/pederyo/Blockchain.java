@@ -24,9 +24,6 @@ public class Blockchain {
 	}
 
 	public boolean validateAndAppendNewBlock(Block b) {
-		// TODO
-		// Validate and append to chain if valid.
-		// Return whether everything went OK and the block was appended.
 		boolean isValid = b.isValidAsNextBlock(getHashLastBlock(), miningTarget);
 		if(isValid) listOfBlocks.add(b);
 		return isValid;
@@ -34,37 +31,14 @@ public class Blockchain {
 	}
 	
 	public boolean isValidChain() {
-		// TODO
-		// Validate the entire chain.
+		for(Block b : listOfBlocks) {
+			if(!b.isValidAsNextBlock(b.getPrev(),miningTarget)) return false;
+		}
 		return true;
-	}
-
-
-
-
-
-	public int getMiningDifficulty() {
-		return miningDifficulty;
-	}
-
-	public void setMiningDifficulty(int miningDifficulty) {
-		this.miningDifficulty = miningDifficulty;
-	}
-
-	public List<Block> getListOfBlocks() {
-		return listOfBlocks;
-	}
-
-	public void setListOfBlocks(List<Block> listOfBlocks) {
-		this.listOfBlocks = listOfBlocks;
 	}
 
 	public String getMiningTarget() {
 		return miningTarget;
-	}
-
-	public void setMiningTarget(String miningTarget) {
-		this.miningTarget = miningTarget;
 	}
 	
 }

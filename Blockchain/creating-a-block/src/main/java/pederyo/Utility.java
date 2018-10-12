@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 public class Utility {
 
     public static byte[] hash256(String s) {
-        MessageDigest digest = null;
+        MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
             return digest.digest(s.getBytes("UTF-8"));
