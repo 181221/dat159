@@ -10,17 +10,17 @@
 .idea/**/shelf
 
 # Sensitive or high-churn files
-.idea/**/dataSources/
-.idea/**/dataSources.ids
-.idea/**/dataSources.local.xml
-.idea/**/sqlDataSources.xml
-.idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
-.idea/**/dbnavigator.xml
+*.idea/**/dataSources/
+*.idea/**/dataSources.ids
+*.idea/**/dataSources.local.xml
+*.idea/**/sqlDataSources.xml
+*.idea/**/dynamic.xml
+*.idea/**/uiDesigner.xml
+*.idea/**/dbnavigator.xml
 
 # Gradle
-.idea/**/gradle.xml
-.idea/**/libraries
+*.idea/**/gradle.xml
+*.idea/**/libraries
 
 # CMake
 cmake-build-debug/
@@ -33,7 +33,9 @@ cmake-build-release/
 *.iws
 
 # IntelliJ
-out/
+*out/
+*.idea
+*out
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
