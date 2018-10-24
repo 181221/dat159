@@ -36,6 +36,7 @@ cmake-build-release/
 *out/
 *.idea
 *out
+*lib
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
