@@ -29,35 +29,37 @@ public class Wallet {
 
     public Transaction createTransaction(long value, String address) throws Exception {
         // 1. Collect all UTXO for this wallet and calculate balance
-        long amount = getBalance();
+        long balance = getBalance();
 
         // 2. Check if there are sufficient funds --- Exception?
-        if(value > amount) throw new Exception("Insufficient founds!");
+        if(value > balance) throw new Exception("Insufficient founds!");
 
         // 3. Choose a number of UTXO to be spent --- Strategy?
         Map<Input, Output> myUtxo = collectMyUtxo(); // collecting all my utxo and spending them all.
 
         // 4. Calculate change
-        long change = value - amount;
+        long change = balance - value;
 
         // 5. Create an "empty" transaction
         Transaction transaction = new Transaction(getPublicKey());
 
         // 6. Add chosen inputs
-        // For each UTXO that will be consumed to make this payment, the wallet creates one input pointing to the UTXO and unlocks it with an unlocking script.
-        for (Output output : myUtxo.values())
-            transaction.addInput(new Input(output.getAddress(), 0));
+        myUtxo.forEach((input, output) ->
+            transaction.addInput(new Input(output.getAddress(), input.getPrevOutputIndex()))
+        );
 
-        Output outputSpend = new Output(amount - value, getAddress());
-
-        if(amount > value)
-            transaction.addOutput(new Output(amount - value, getAddress()));
         // 7. Add 1 or 2 outputs, depending on change
+        Output outputSpend = new Output(value, HashUtil.addressFromPublicKey(getPublicKey()));
         transaction.addOutput(outputSpend);
+        if(change > 0)
+            transaction.addOutput(new Output(change, HashUtil.addressFromPublicKey(getPublicKey())));
+
         // 8. Sign the transaction
         transaction.signTxUsing(keyPair.getPrivate());
+
         // 9. Calculate the hash for the transaction
         transaction.calculateTxHash();
+
         // 10. return
         return transaction;
         
