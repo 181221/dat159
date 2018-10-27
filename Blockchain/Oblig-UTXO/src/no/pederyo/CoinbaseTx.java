@@ -9,16 +9,40 @@ public class CoinbaseTx {
 	private String txHash;
 
 	public CoinbaseTx(String coinbase, int value, String address) {
-	    //TODO
-	    //Remember to calculate txHash
+	    this.coinbase = coinbase;
+	    output = new Output(value, address);
 	}
-	
+
 	@Override
 	public String toString() {
-	    //TODO For screen output
-	    return "";
+		return "CoinbaseTx{" +
+				"coinbase='" + coinbase + '\'' +
+				", output=" + output +
+				", txHash='" + txHash + '\'' +
+				'}';
 	}
-	
-	//TODO Getters?
-	
+
+	public String getCoinbase() {
+		return coinbase;
+	}
+
+	public void setCoinbase(String coinbase) {
+		this.coinbase = coinbase;
+	}
+
+	public Output getOutput() {
+		return output;
+	}
+
+	public void setOutput(Output output) {
+		this.output = output;
+	}
+
+	public String getTxHash() {
+		return txHash;
+	}
+
+	public void setTxHash(String txHash) {
+		this.txHash = txHash;
+	}
 }

@@ -14,29 +14,35 @@ public class Wallet {
     private Map<Input, Output> utxoMap;
 
     public Wallet(String id, UTXO utxo) {
-        //TODO
+        this.id = id;
+        utxoMap = utxo.getMap();
     }
 
     public String getAddress() {
-        //TODO
-        return null;
+        return id;
     }
 
     public PublicKey getPublicKey() {
-        //TODO
-        return null;
+        return keyPair.getPublic();
     }
 
     public Transaction createTransaction(long value, String address) throws Exception {
 
-        //TODO - This is a big one
+        // TODO - This is a big one
+
         
         // 1. Collect all UTXO for this wallet and calculate balance
+        long amount = getBalance();
         // 2. Check if there are sufficient funds --- Exception?
+        if(value > amount) throw new Exception("Insufficient founds!");
         // 3. Choose a number of UTXO to be spent --- Strategy?
+        Collection<Output> outputs = utxoMap.values();
         // 4. Calculate change
+        long change = value - amount;
         // 5. Create an "empty" transaction
+        Transaction transaction = new Transaction(getPublicKey());
         // 6. Add chosen inputs
+        transaction
         // 7. Add 1 or 2 outputs, depending on change
         // 8. Sign the transaction
         // 9. Calculate the hash for the transaction
@@ -48,27 +54,43 @@ public class Wallet {
         // Do that manually from the Application-main.
     }
 
-    @Override
-    public String toString() {
-        //TODO
-        return null;
-    }
 
     public long getBalance() {
-        //TODO
-        return 0;
-    }
-    
-    //TODO Getters?
-    
-    private long calculateBalance(Collection<Output> outputs) {
-        //TODO
-        return 0;
+        return calculateBalance(utxoMap.values());
     }
 
     private Map<Input, Output> collectMyUtxo() {
-        //TODO
-        return null;
+        return utxoMap;
     }
+
+    private long calculateBalance(Collection<Output> outputs) {
+        return outputs.stream().map(Output::getValue).count();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public KeyPair getKeyPair() {
+        return keyPair;
+    }
+
+    public void setKeyPair(KeyPair keyPair) {
+        this.keyPair = keyPair;
+    }
+
+    public Map<Input, Output> getUtxoMap() {
+        return utxoMap;
+    }
+
+    public void setUtxoMap(Map<Input, Output> utxoMap) {
+        this.utxoMap = utxoMap;
+    }
+
+
 
 }

@@ -13,16 +13,23 @@ public class UTXO {
 	private Map<Input, Output> map = new HashMap<>();
 	
 	public void printUTXO() {
-	    //TODO
+		map.forEach((input, output) -> System.out.println(input.toString() + " " + output.toString()));
 	}
 	
 	public void addOutputFrom(CoinbaseTx ctx) {
-	    //TODO
+	    map.put(new Input(ctx.getTxHash(),0), ctx.getOutput());
 	}
 
     public void addAndRemoveOutputsFrom(Transaction tx) {
-        //TODO
+		tx.getOutputs().forEach( index -> map.put(new Input(tx.getTxHash(), tx.getOutputs().indexOf(index)), index));
+		tx.getInputs().forEach( index -> map.remove(index));
     }
 
-    //TODO Getters?
+	public Map<Input, Output> getMap() {
+		return map;
+	}
+
+	public void setMap(Map<Input, Output> map) {
+		this.map = map;
+	}
 }
