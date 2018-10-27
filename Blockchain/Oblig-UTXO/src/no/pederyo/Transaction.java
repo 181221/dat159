@@ -26,7 +26,7 @@ public class Transaction {
 	private String txHash;
 	
 	public Transaction(PublicKey senderPublicKey) {
-		this.senderPublicKey = senderPublicKey;
+		this.senderPublicKey = DSAUtil.base64DecodePublicKey(DSAUtil.base64EncodeKey(senderPublicKey));
 	}
 	
 	public void addInput(Input input) {
@@ -60,13 +60,13 @@ public class Transaction {
                 signature != null &&
                 signature.length != 0 &&
                 txHash != null &&
-                inputs.size() != 0 &&
-                outputs.size() != 0;
+                !inputs.isEmpty() &&
+                !outputs.isEmpty();
     }
     private boolean inputsAreUnspentAndBelongToSender(){
         return inputs.stream().allMatch(input -> {
             String address = outputs.get(input.getPrevOutputIndex()).getAddress();
-            return addressFromPublicKey(senderPublicKey).equals(address);
+            return HashUtil.addressFromPublicKey(senderPublicKey).equals(address);
         });
     }
 
@@ -75,7 +75,7 @@ public class Transaction {
     }
 
     private boolean outputsLargerThanZero(){
-	    return outputs.stream().allMatch(output -> output.getValue() > 0);
+	    return outputs.stream().allMatch(output -> output.getValue() > 0 && output.getValue() < 21000000);
     }
     private boolean inputsAndOutputsSumIsEqual(){
 	    long intputSum = inputs.stream().map(input -> outputs.get(input.getPrevOutputIndex()).getValue()).count();

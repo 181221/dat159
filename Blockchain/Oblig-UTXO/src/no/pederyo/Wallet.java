@@ -17,6 +17,7 @@ public class Wallet {
     public Wallet(String id, UTXO utxo) {
         this.id = id;
         utxoMap = utxo.getMap();
+        keyPair = DSAUtil.generateRandomDSAKeyPair();
     }
 
     public String getAddress() {
@@ -24,7 +25,7 @@ public class Wallet {
     }
 
     public PublicKey getPublicKey() {
-        return keyPair.getPublic();
+        return DSAUtil.base64DecodePublicKey(DSAUtil.base64EncodeKey(keyPair.getPublic()));
     }
 
     public Transaction createTransaction(long value, String address) throws Exception {

@@ -1,5 +1,9 @@
 package no.pederyo;
 
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
 public class Application {
     
     private static UTXO utxo = new UTXO();
@@ -22,7 +26,26 @@ public class Application {
 
         // 0. To get started, we need a few (single address) Wallets. Create 2 wallets.
         //    Think of one of them as the "miner" (the one collecting "block rewards").
- 
+
+		KeyPair keypair = DSAUtil.generateRandomDSAKeyPair();
+		PublicKey senderPublicKey = keypair.getPublic();
+		PrivateKey pk = keypair.getPrivate();
+
+		System.out.println(DSAUtil.base64DecodePublicKey(DSAUtil.base64EncodeKey(senderPublicKey)));
+		System.out.println(DSAUtil.base64DecodePrivateKey(DSAUtil.base64EncodeKey(pk)));
+
+
+
+
+
+		//DSAUtil.base64DecodePublicKey(DSAUtil.base64EncodeKey(senderPublicKey));
+
+		//Wallet w = new Wallet(HashUtil.base64Encode(HashUtil.sha256Hash("first wallet")) ,utxo);
+		//Wallet w2 = new Wallet(HashUtil.base64Encode(HashUtil.sha256Hash("Second wallet")) ,utxo);
+
+		//CoinbaseTx ctx = new CoinbaseTx("The first Coinbase", 12, w.getAddress());
+
+		//utxo.addOutputFrom(ctx);
         // 1. The first "block" (= round of transactions) contains only a coinbase
         //    transaction. Create a coinbase transaction that adds a certain
         //    amount to the "miner"'s address. Update the UTXO-set (add only).
