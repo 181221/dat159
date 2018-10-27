@@ -44,6 +44,7 @@ public class Wallet {
         Transaction transaction = new Transaction(getPublicKey());
 
         // 6. Add chosen inputs
+        // For now add all
         myUtxo.forEach((input, output) ->
             transaction.addInput(new Input(output.getAddress(), input.getPrevOutputIndex()))
         );

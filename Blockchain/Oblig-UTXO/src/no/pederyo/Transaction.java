@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.pederyo.HashUtil.addressFromPublicKey;
+
 public class Transaction {
 
     //Simplified compared to Bitcoin
@@ -43,25 +45,51 @@ public class Transaction {
 		txHash = HashUtil.base64Encode(HashUtil.sha256Hash(this.toString().getBytes()));
 	}
 
-
-	// 2. The second "block" contains two transactions, the mandatory coinbase
-	//    transaction and a regular transaction. The regular transaction shall
-	//    send ~20% of the money from the "miner"'s address to the other address.
-
-	//    Validate the regular transaction created by the "miner"'s wallet:
-	//      - All the content must be valid (not null++)!!!
-	//      - All the inputs are unspent and belongs to the sender
-	//      - There are no repeating inputs!!!
-	//      - All the outputs must have a value > 0
-	//      - The sum of inputs equals the sum of outputs
-	//      - The transaction is correctly signed by the sender
-	//      - The transaction hash is correct
-
 	public boolean isValid() {
-	    //TODO Complete validation of the transaction. Called by the Application.
-	    return true;
+        return contentIsNotNull() &&
+                inputsAreUnspentAndBelongToSender() &&
+                noRepeatingInputs() &&
+                outputsLargerThanZero() &&
+                inputsAndOutputsSumIsEqual() &&
+                isSignedBySender() &&
+                transactionHashIsCorrect();
 	}
 
+	private boolean contentIsNotNull() {
+	    return senderPublicKey != null &&
+                signature != null &&
+                signature.length != 0 &&
+                txHash != null &&
+                inputs.size() != 0 &&
+                outputs.size() != 0;
+    }
+    private boolean inputsAreUnspentAndBelongToSender(){
+        return inputs.stream().allMatch(input -> {
+            String address = outputs.get(input.getPrevOutputIndex()).getAddress();
+            return addressFromPublicKey(senderPublicKey).equals(address);
+        });
+    }
+
+    private boolean noRepeatingInputs(){
+	    return inputs.stream().noneMatch(input -> inputs.indexOf(input) == -1);
+    }
+
+    private boolean outputsLargerThanZero(){
+	    return outputs.stream().allMatch(output -> output.getValue() > 0);
+    }
+    private boolean inputsAndOutputsSumIsEqual(){
+	    long intputSum = inputs.stream().map(input -> outputs.get(input.getPrevOutputIndex()).getValue()).count();
+	    long outputsSum = outputs.stream().map(Output::getValue).count();
+	    return intputSum == outputsSum;
+    }
+
+    private boolean isSignedBySender(){
+	    return DSAUtil.verifyWithDSA(senderPublicKey,inputs() + outputs(), signature);
+    }
+
+    private boolean transactionHashIsCorrect(){
+	    return txHash.equals(HashUtil.base64Encode(HashUtil.sha256Hash(this.toString().getBytes())));
+    }
 
 	public List<Input> getInputs() {
 		return inputs;
