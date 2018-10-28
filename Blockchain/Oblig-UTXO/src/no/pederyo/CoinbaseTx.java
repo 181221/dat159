@@ -23,27 +23,12 @@ public class CoinbaseTx {
 				'}';
 	}
 
-	public String getCoinbase() {
-		return coinbase;
-	}
-
-	public void setCoinbase(String coinbase) {
-		this.coinbase = coinbase;
-	}
-
 	public Output getOutput() {
 		return output;
 	}
 
-	public void setOutput(Output output) {
-		this.output = output;
-	}
 
 	public String getTxHash() {
 		return txHash;
-	}
-
-	public void setTxHash(String txHash) {
-		this.txHash = txHash;
 	}
 }

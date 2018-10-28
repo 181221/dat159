@@ -17,17 +17,10 @@ public class Output {
 		return value;
 	}
 
-	public void setValue(long value) {
-		this.value = value;
-	}
-
 	public String getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
 
 	@Override
 	public String toString() {

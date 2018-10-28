@@ -56,7 +56,4 @@ public class UTXO {
 		return map;
 	}
 
-	public void setMap(Map<Input, Output> map) {
-		this.map = map;
-	}
 }

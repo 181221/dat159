@@ -4,8 +4,7 @@ public class Application {
     
     private static UTXO utxo = new UTXO();
 
-
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args)  {
         Wallet miner = new Wallet(HashUtil.base64Encode(HashUtil.sha256Hash("first wallet, (miner) ")), utxo);
         Wallet peders_wallet = new Wallet(HashUtil.base64Encode(HashUtil.sha256Hash("Peders wallet")), utxo);
 

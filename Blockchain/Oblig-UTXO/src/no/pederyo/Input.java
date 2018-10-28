@@ -18,17 +18,11 @@ public class Input {
 		return prevTxHash;
 	}
 
-	public void setPrevTxHash(String prevTxHash) {
-		this.prevTxHash = prevTxHash;
-	}
 
 	public int getPrevOutputIndex() {
 		return prevOutputIndex;
 	}
 
-	public void setPrevOutputIndex(int prevOutputIndex) {
-		this.prevOutputIndex = prevOutputIndex;
-	}
 
 	@Override
 	public String toString() {

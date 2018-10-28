@@ -27,7 +27,7 @@ public class Transaction {
 		this.senderPublicKey = senderPublicKey;
 	}
 	
-	public void addInput(Input input) {
+	public void addInput(Input input)   {
 		if(inputs.contains(input))
             try {
                 throw new Exception("Inputs exists");
@@ -90,41 +90,18 @@ public class Transaction {
 		return inputs;
 	}
 
-	public void setInputs(List<Input> inputs) {
-		this.inputs = inputs;
-	}
-
 	public List<Output> getOutputs() {
 		return outputs;
-	}
-
-	public void setOutputs(List<Output> outputs) {
-		this.outputs = outputs;
 	}
 
 	public PublicKey getSenderPublicKey() {
 		return senderPublicKey;
 	}
 
-	public void setSenderPublicKey(PublicKey senderPublicKey) {
-		this.senderPublicKey = senderPublicKey;
-	}
-
-	public byte[] getSignature() {
-		return signature;
-	}
-
-	public void setSignature(byte[] signature) {
-		this.signature = signature;
-	}
-
 	public String getTxHash() {
 		return txHash;
 	}
 
-	public void setTxHash(String txHash) {
-		this.txHash = txHash;
-	}
 
 	@Override
 	public String toString() {
