@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.pederyo.HashUtil.addressFromPublicKey;
-
 public class Transaction {
 
     //Simplified compared to Bitcoin
@@ -26,31 +24,38 @@ public class Transaction {
 	private String txHash;
 	
 	public Transaction(PublicKey senderPublicKey) {
-		this.senderPublicKey = DSAUtil.base64DecodePublicKey(DSAUtil.base64EncodeKey(senderPublicKey));
+		this.senderPublicKey = senderPublicKey;
 	}
 	
 	public void addInput(Input input) {
-		inputs.add(input);
+		if(inputs.contains(input))
+            try {
+                throw new Exception("Inputs exists");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        else inputs.add(input);
 	}
 	
-	public void addOutput(Output output) {
-		outputs.add(output);
-	}
+	public void addOutput(Output output) throws Exception {
+	    if(outputs.contains(output))
+            throw new Exception("Inputs exists");
+	    else
+	        outputs.add(output);
+    }
 
 	public void signTxUsing(PrivateKey privateKey) {
 		signature = DSAUtil.signWithDSA(privateKey, inputs() + outputs());
 	}
 
 	public void calculateTxHash() {
-		txHash = HashUtil.base64Encode(HashUtil.sha256Hash(this.toString().getBytes()));
+		txHash = HashUtil.base64Encode(HashUtil.sha256Hash(this.toString()));
 	}
 
 	public boolean isValid() {
         return contentIsNotNull() &&
-                inputsAreUnspentAndBelongToSender() &&
                 noRepeatingInputs() &&
                 outputsLargerThanZero() &&
-                inputsAndOutputsSumIsEqual() &&
                 isSignedBySender() &&
                 transactionHashIsCorrect();
 	}
@@ -63,12 +68,7 @@ public class Transaction {
                 !inputs.isEmpty() &&
                 !outputs.isEmpty();
     }
-    private boolean inputsAreUnspentAndBelongToSender(){
-        return inputs.stream().allMatch(input -> {
-            String address = outputs.get(input.getPrevOutputIndex()).getAddress();
-            return HashUtil.addressFromPublicKey(senderPublicKey).equals(address);
-        });
-    }
+
 
     private boolean noRepeatingInputs(){
 	    return inputs.stream().noneMatch(input -> inputs.indexOf(input) == -1);
@@ -77,18 +77,13 @@ public class Transaction {
     private boolean outputsLargerThanZero(){
 	    return outputs.stream().allMatch(output -> output.getValue() > 0 && output.getValue() < 21000000);
     }
-    private boolean inputsAndOutputsSumIsEqual(){
-	    long intputSum = inputs.stream().map(input -> outputs.get(input.getPrevOutputIndex()).getValue()).count();
-	    long outputsSum = outputs.stream().map(Output::getValue).count();
-	    return intputSum == outputsSum;
-    }
 
     private boolean isSignedBySender(){
 	    return DSAUtil.verifyWithDSA(senderPublicKey,inputs() + outputs(), signature);
     }
 
     private boolean transactionHashIsCorrect(){
-	    return txHash.equals(HashUtil.base64Encode(HashUtil.sha256Hash(this.toString().getBytes())));
+	    return txHash.equals(HashUtil.base64Encode(HashUtil.sha256Hash(this.toString())));
     }
 
 	public List<Input> getInputs() {
@@ -134,13 +129,18 @@ public class Transaction {
 	@Override
 	public String toString() {
 		return "Transaction{" +
-				"inputs=" + inputs +
-				", outputs=" + outputs +
+				"inputs=" + inputs() +
+				", outputs=" + outputs() +
 				", senderPublicKey=" + senderPublicKey +
 				", signature=" + Arrays.toString(signature) +
-				", txHash='" + txHash + '\'' +
 				'}';
 	}
+    public String printTransaction() {
+        return "Transaction{" +
+                "inputs=" + inputs() +
+                ", outputs=" + outputs() +
+                '}';
+    }
 
 	private String inputs(){
 		return inputs.stream().map(Input::toString).collect(Collectors.joining("\n\t\t"));

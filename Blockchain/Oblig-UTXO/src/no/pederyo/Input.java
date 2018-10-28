@@ -1,5 +1,7 @@
 package no.pederyo;
 
+import java.util.Objects;
+
 public class Input {
 
     //Simplified compared to Bitcoin
@@ -35,4 +37,18 @@ public class Input {
 				", prevOutputIndex=" + prevOutputIndex +
 				'}';
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Input input = (Input) o;
+        return prevOutputIndex == input.prevOutputIndex &&
+                Objects.equals(prevTxHash, input.prevTxHash);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(prevTxHash, prevOutputIndex);
+    }
 }

@@ -1,5 +1,6 @@
 package no.pederyo;
 
+import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -12,7 +13,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import javax.xml.bind.DatatypeConverter;
 
 public class DSAUtil {
 	

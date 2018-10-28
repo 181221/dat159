@@ -1,7 +1,6 @@
 package no.pederyo;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class UTXO {
     
@@ -21,9 +20,37 @@ public class UTXO {
 	}
 
     public void addAndRemoveOutputsFrom(Transaction tx) {
-		tx.getOutputs().forEach( index -> map.put(new Input(tx.getTxHash(), tx.getOutputs().indexOf(index)), index));
-		tx.getInputs().forEach( index -> map.remove(index));
-    }
+		tx.getInputs().forEach(input ->
+				map.entrySet().removeIf(outputEntry -> outputEntry.getValue().getAddress().equals(input.getPrevTxHash())));
+		tx.getOutputs().forEach(index -> map.put(new Input(tx.getTxHash(), tx.getOutputs().indexOf(index)), index));
+	}
+
+    public boolean isUnspentOutput(Transaction tx){
+		for(Output o : tx.getOutputs()){
+			for(Map.Entry<Input, Output> i : map.entrySet()){
+				if(i.getKey().getPrevTxHash().equals(o.getAddress())){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public boolean inputsAndOutputsSumIsEqual(Transaction tx){
+		String hash = tx.getInputs().get(0).getPrevTxHash();
+		long sumInputs = 0;
+		for(Map.Entry<Input, Output> k : map.entrySet()) {
+			if(k.getValue().getAddress().equals(hash)){
+				sumInputs += k.getValue().getValue();
+			}
+		}
+		long sumValues = tx.getOutputs().stream().mapToLong(Output::getValue).sum();
+		return sumInputs == sumValues;
+	}
+
+	public boolean inputsBelongToSender(Transaction tx) {
+		return tx.getInputs().stream().anyMatch(input -> input.getPrevTxHash().equals(HashUtil.addressFromPublicKey(tx.getSenderPublicKey())));
+	}
 
 	public Map<Input, Output> getMap() {
 		return map;

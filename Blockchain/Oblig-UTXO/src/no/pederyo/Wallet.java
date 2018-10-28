@@ -21,29 +21,30 @@ public class Wallet {
     }
 
     public String getAddress() {
-        return id;
+        return HashUtil.addressFromPublicKey(keyPair.getPublic());
     }
 
     public PublicKey getPublicKey() {
-        return DSAUtil.base64DecodePublicKey(DSAUtil.base64EncodeKey(keyPair.getPublic()));
+        return keyPair.getPublic();
     }
 
     public Transaction createTransaction(long value, String address) throws Exception {
         // 1. Collect all UTXO for this wallet and calculate balance
-        long balance = getBalance();
+
+        Map<Input, Output> myUtxo = collectMyUtxo();
+
+        long balance = calculateBalance(myUtxo.values());
 
         // 2. Check if there are sufficient funds --- Exception?
         if(value > balance) throw new Exception("Insufficient founds!");
 
         // 3. Choose a number of UTXO to be spent --- Strategy?
-        Map<Input, Output> myUtxo = collectMyUtxo(); // collecting all my utxo and spending them all.
 
         // 4. Calculate change
         long change = balance - value;
 
         // 5. Create an "empty" transaction
         Transaction transaction = new Transaction(getPublicKey());
-
         // 6. Add chosen inputs
         // For now add all
         myUtxo.forEach((input, output) ->
@@ -51,10 +52,10 @@ public class Wallet {
         );
 
         // 7. Add 1 or 2 outputs, depending on change
-        Output outputSpend = new Output(value, HashUtil.addressFromPublicKey(getPublicKey()));
+        Output outputSpend = new Output(value, address);
         transaction.addOutput(outputSpend);
         if(change > 0)
-            transaction.addOutput(new Output(change, HashUtil.addressFromPublicKey(getPublicKey())));
+            transaction.addOutput(new Output(change, getAddress()));
 
         // 8. Sign the transaction
         transaction.signTxUsing(keyPair.getPrivate());
@@ -77,38 +78,20 @@ public class Wallet {
 
     private Map<Input, Output> collectMyUtxo() {
         return utxoMap.entrySet().stream()
-                .filter(map -> map.getValue().getAddress().equals(id))
+                .filter(map -> map.getValue().getAddress().equals(getAddress()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private long calculateBalance(Collection<Output> outputs) {
-        return outputs.stream().map(Output::getValue).count();
+        return outputs.stream().mapToLong(Output::getValue).sum();
     }
 
-    public String getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "Wallet{" +
+                "id='" + id + '\'' +
+                "address=" + getAddress()+ '\'' +
+                ", Balance=" + getBalance() +
+                '}';
     }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public KeyPair getKeyPair() {
-        return keyPair;
-    }
-
-    public void setKeyPair(KeyPair keyPair) {
-        this.keyPair = keyPair;
-    }
-
-    public Map<Input, Output> getUtxoMap() {
-        return utxoMap;
-    }
-
-    public void setUtxoMap(Map<Input, Output> utxoMap) {
-        this.utxoMap = utxoMap;
-    }
-
-
-
 }

@@ -11,6 +11,7 @@ public class CoinbaseTx {
 	public CoinbaseTx(String coinbase, int value, String address) {
 	    this.coinbase = coinbase;
 	    output = new Output(value, address);
+	    txHash = HashUtil.base64Encode(HashUtil.sha256Hash(this.toString()));
 	}
 
 	@Override
