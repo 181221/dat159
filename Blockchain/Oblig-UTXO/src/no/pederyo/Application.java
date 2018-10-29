@@ -19,7 +19,7 @@ public class Application {
 
         try {
             Transaction regularTx = miner.createTransaction(20, peders_wallet.getAddress());
-            if (!regularTx.isValid() &&
+            if(!(regularTx.isValid()) &&
                     utxo.inputsBelongToSender(regularTx) &&
                     utxo.inputsAndOutputsSumIsEqual(regularTx) &&
                     utxo.isUnspentOutput(regularTx)
