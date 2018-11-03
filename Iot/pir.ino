@@ -5,8 +5,9 @@ int BUTTON_ON = 6;
 int BUTTON_OFF = 2;
 int PIR_SENSOR = 4;
 
-int button_on_state = LOW;
-int button_off_state = LOW;
+int button_on_state;
+int button_off_state;
+int ledState = HIGH;
 
 int last_button_on_state = LOW;
 int last_button_off_state = LOW;
@@ -19,17 +20,57 @@ int STATE = 1;
 const int LOCKED = 0;
 const int UNLOCKED = 1;
 int WAITING = 1;
-int buttonPushCounter = 0;
-int code = 0;
-int code1 = 0;
+
+unsigned long lastDebounceTime = 0; // the last time the output pin was toggled
+unsigned long debounceDelay = 50;   // the debounce time; increase if the output flickers
+
+class Button
+{
+private:
+  bool _state;
+  uint8_t _pin;
+  uint8_t _counter;
+
+public:
+  Button(uint8_t pin) : _pin(pin) {}
+
+  void begin()
+  {
+    pinMode(_pin, INPUT_PULLUP);
+    _state = digitalRead(_pin);
+  }
+
+  bool isReleased()
+  {
+    bool v = digitalRead(_pin);
+    if (v != _state)
+    {
+      _state = v;
+      if (_state)
+      {
+        _counter += 1;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  int pressed()
+  {
+    return _counter;
+  }
+};
+
+Button myButton(6);
+Button myButton2(2);
 
 void setup()
 {
   pinMode(RED, OUTPUT);
   pinMode(YELLOW, OUTPUT);
   pinMode(GREEN, OUTPUT);
-  pinMode(BUTTON_ON, INPUT);
-  pinMode(BUTTON_OFF, INPUT);
+  myButton.begin();
+  myButton2.begin();
   pinMode(PIR_SENSOR, INPUT);
   Serial.begin(9600);
 }
@@ -45,23 +86,27 @@ void loop()
   case UNLOCKED:
     digitalWrite(RED, LOW);
     digitalWrite(YELLOW, HIGH);
-    while (WAITING)
+    int rightCombination = 1;
+    while (rightCombination)
     {
-      button_on_state = digitalRead(BUTTON_ON);
-
-      while(button_on_state != last_button_on_state){
-        if(button_on_state == HIGH){
-          button_off_state = digitalRead(BUTTON_OFF);
-          if(button_off_state != last_button_off_state){
-            if(button_off_state == HIGH){
-              digitalWrite(GREEN, HIGH)
-            }
+      if (myButton.isReleased())
+      {
+        while (!myButton.isReleased())
+        {
+          if (myButton2.isReleased())
+          {
+            digitalWrite(YELLOW, LOW);
+            digitalWrite(GREEN, HIGH);
           }
         }
+        rightCombination = 0;
+      }else if(myButton2.isReleased()){
+        rightCombination = 0;
       }
-      last_button_on_state = button_on_state;
-      last_button_off_state = last_button_off_state;
+      delay(50);
     }
+
+    
     break;
   }
   PIR_STATE = digitalRead(PIR_SENSOR);
