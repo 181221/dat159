@@ -57,3 +57,4 @@ fabric.properties
 .idea/httpRequests
 
 .vscode
+node_modules
