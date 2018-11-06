@@ -4,14 +4,13 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-const char *ssid = "hodden";
-const char *password = "heaton27";
-const char *mqtt_server = "m23.cloudmqtt.com";
+const char *ssid = "ssid";
+const char *password = "password";
+const char *mqtt_server = "mqtt_server";
 
 long lastMsg = 0;
 char msg[50];
 int value = 0;
-
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -43,7 +42,7 @@ void setup()
   {
     Serial.println("Connecting to MQTT...");
 
-    if (client.connect("ESP32Client", "rlmlvquc", "ck_xPRfR8TaT"))
+    if (client.connect("ESP32Client", "username", "password"))
     {
 
       Serial.println("connected");
@@ -59,7 +58,6 @@ void setup()
   client.publish("esp/test", "Hello from ESP8266");
   client.publish("lightStatus", "OFF");
   client.subscribe("output");
-  client.subscribe("test");
 }
 
 void callback(char *topic, byte *message, unsigned int length)
@@ -76,21 +74,22 @@ void callback(char *topic, byte *message, unsigned int length)
   }
   Serial.println();
 
-  if (String(topic) == "output") {
+  if (String(topic) == "output")
+  {
     Serial.print("Changing output to ");
-    if(messageTemp == "on"){
+    if (messageTemp == "on")
+    {
       Serial.println("on");
       digitalWrite(LED_BUILTIN, HIGH);
       client.publish("lightStatus", "ON");
     }
-    else if(messageTemp == "off"){
+    else if (messageTemp == "off")
+    {
       Serial.println("off");
       digitalWrite(LED_BUILTIN, LOW);
       client.publish("lightStatus", "OFF");
     }
   }
-  
-
 }
 
 void reconnect()
@@ -119,14 +118,16 @@ void reconnect()
 
 void loop()
 {
-  if (!client.connected()) {
+  if (!client.connected())
+  {
     reconnect();
   }
   client.loop();
 
   long now = millis();
 
-  if(now - lastMsg > 5000) {
+  if (now - lastMsg > 5000)
+  {
     //use the functions which are supplied by library.
     lastMsg = now;
     float h = dht.readHumidity();
@@ -138,16 +139,14 @@ void loop()
       Serial.println("Failed to read from DHT sensor!");
       return;
     }
-    print(h, t);
     char tempString[8];
     char humidString[8];
     dtostrf(t, 1, 2, tempString);
     dtostrf(h, 1, 2, humidString);
-  
+
     client.publish("temperature", tempString);
     client.publish("humidity", humidString);
   }
-
 }
 
 void print(float h, float t)
