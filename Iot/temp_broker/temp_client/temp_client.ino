@@ -4,9 +4,12 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-const char *ssid = "ssid";
-const char *password = "password";
-const char *mqtt_server = "mqtt_server";
+const char *ssid = "";
+const char *password = "";
+const char *mqtt_server = "";
+const char *mqtt_user = "";
+const int   mqtt_port = 0;
+const char *mqtt_password = "";
 
 long lastMsg = 0;
 char msg[50];
@@ -19,8 +22,6 @@ DHT dht(DHTPIN, DHTTYPE);
 
 void setup()
 {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
   Serial.begin(115200);
   dht.begin();
   WiFi.begin(ssid, password);
@@ -35,14 +36,13 @@ void setup()
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  client.setServer(mqtt_server, 10113);
-  client.setCallback(callback);
+  client.setServer(mqtt_server, mqtt_port);
 
   while (!client.connected())
   {
     Serial.println("Connecting to MQTT...");
 
-    if (client.connect("ESP32Client", "username", "password"))
+    if (client.connect("ESP32Client", mqtt_user, mqtt_password))
     {
 
       Serial.println("connected");
@@ -55,41 +55,7 @@ void setup()
       delay(20000);
     }
   }
-  client.publish("esp/test", "Hello from ESP8266");
-  client.publish("lightStatus", "OFF");
-  client.subscribe("output");
-}
-
-void callback(char *topic, byte *message, unsigned int length)
-{
-  Serial.print("Message arrived on topic: ");
-  Serial.print(topic);
-  Serial.print(". Message: ");
-  String messageTemp;
-
-  for (int i = 0; i < length; i++)
-  {
-    Serial.print((char)message[i]);
-    messageTemp += (char)message[i];
-  }
-  Serial.println();
-
-  if (String(topic) == "output")
-  {
-    Serial.print("Changing output to ");
-    if (messageTemp == "on")
-    {
-      Serial.println("on");
-      digitalWrite(LED_BUILTIN, HIGH);
-      client.publish("lightStatus", "ON");
-    }
-    else if (messageTemp == "off")
-    {
-      Serial.println("off");
-      digitalWrite(LED_BUILTIN, LOW);
-      client.publish("lightStatus", "OFF");
-    }
-  }
+  client.publish("esp/bod", "Hello from ESP32");
 }
 
 void reconnect()
@@ -99,11 +65,9 @@ void reconnect()
   {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("ESP8266Client"))
+    if (client.connect("ESP32Client", mqtt_user, mqtt_password))
     {
       Serial.println("connected");
-      // Subscribe
-      client.subscribe("esp32/output");
     }
     else
     {
@@ -144,20 +108,7 @@ void loop()
     dtostrf(t, 1, 2, tempString);
     dtostrf(h, 1, 2, humidString);
 
-    client.publish("temperature", tempString);
-    client.publish("humidity", humidString);
+    client.publish("room/bod/temperature", tempString);
+    client.publish("room/bod/humidity", humidString);
   }
-}
-
-void print(float h, float t)
-{
-
-  // print the result to Terminal
-  Serial.print("Humidity: ");
-  Serial.print(h);
-  Serial.print(" %\t");
-  Serial.print("Temperature: ");
-  Serial.print(t);
-  Serial.println(" *C ");
-  //we delay a little bit for next read
 }
