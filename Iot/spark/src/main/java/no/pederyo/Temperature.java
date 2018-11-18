@@ -1,4 +1,4 @@
-package no.hvl.dat159;
+package no.pederyo;
 
 public class Temperature {
 

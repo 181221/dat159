@@ -4,12 +4,12 @@
 #include <DallasTemperature.h>
 #define ONE_WIRE_BUS 23
 
-const char *ssid = "";
-const char *password = "";
-const char *mqtt_server = "";
-const int   mqtt_port = 0;
-const char *mqtt_user = "";
-const char *mqtt_password = "";
+const char *ssid = "MotoG";
+const char *password = "heaton27";
+const char *mqtt_server = "m23.cloudmqtt.com";
+const int   mqtt_port = 10113;
+const char *mqtt_user = "rlmlvquc";
+const char *mqtt_password = "ck_xPRfR8TaT";
 
 long lastMsg = 0;
 char msg[50];
@@ -61,8 +61,7 @@ void setup()
       delay(20000);
     }
   }
-  client.publish("esp/32", "Hello from living room");
-  client.publish(TOPIC_LIGHT_STATUS, "Off");
+  client.publish("room/esp/started", "Hello from living room");
   client.subscribe(TOPIC_LIGHT_SWITCH);
 }
 
@@ -137,7 +136,9 @@ void loop()
     char fbuff[10];
     sensors.requestTemperatures();
     float temp = sensors.getTempCByIndex(0);
-    dtostrf(sensors.getTempCByIndex(0),2,2,fbuff);
-    client.publish(TOPIC_TEMPERATURE, fbuff);
+    if(sensors.getTempCByIndex(0) != -127){
+      dtostrf(sensors.getTempCByIndex(0),2,2,fbuff);
+      client.publish(TOPIC_TEMPERATURE, fbuff);
+    }
   }
 }

@@ -1,4 +1,4 @@
-package no.hvl.dat159;
+package no.pederyo;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -14,14 +14,11 @@ public class Main {
     public static void main(String[] args) {
     	
     	temp = new Temperature();
-    	
-    	port(8080);
-    	
-    	after((req, res) -> {
-    		  res.type("application/json");
-    		});
+
+        port(getHerokuAssignedPort());
+
     	String device = "pederyo_dweet";
-        get("get/latest/dweet/for/"+device, (req, res) -> {
+        get("get/dweet/for/"+device, (req, res) -> {
         	Gson gson = new Gson();
             JsonObject dweet = new JsonObject();
             dweet.addProperty("this", "succeeded");
@@ -30,21 +27,24 @@ public class Main {
             JsonObject with = new JsonObject();
 
             with.addProperty("thing", device);
-            with.addProperty("created", LocalDateTime.now().toString());
+            with.addProperty("created", LocalDateTime.now().withNano(0).toString());
             with.add("content", gson.toJsonTree(temp));
             dweet.add("with", with);
+            res.type("application/json");
         	return gson.toJson(dweet);
 		});
         
-        put("/tempsensor/current", (req,res) -> {
-        
+        put("get/dweet/for/"+device, (req,res) -> {
+
         	Gson gson = new Gson();
         	
         	temp = gson.fromJson(req.body(), Temperature.class);
-        
-            return tempToJson();
+            res.type("application/json");
+            return gson.toJson(temp);
         	
         });
+
+        get("*", (request, response) -> "404 - not found");
     }
     
     static String tempToJson () {
@@ -54,5 +54,12 @@ public class Main {
     	String jsonInString = gson.toJson(temp);
     	
     	return jsonInString;
+    }
+    static int getHerokuAssignedPort() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        if (processBuilder.environment().get("PORT") != null) {
+            return Integer.parseInt(processBuilder.environment().get("PORT"));
+        }
+        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
     }
 }
